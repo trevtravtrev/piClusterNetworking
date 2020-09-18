@@ -1,0 +1,25 @@
+Install Noobs
+
+Update:
+	sudo apt update
+	sudo apt upgrade
+
+Set Hostname to what # pi it is in the cluster (number ONLY):
+	Applications -> Preferences -> Raspberry Pi Configuration -> System -> Hostname
+
+Enable VNC server and add to account:
+	Applications -> Preferences -> Raspberry Pi Configuration -> Interfaces -> VNC Enable
+
+	Open VNC server and add to account
+
+Set Display Resolution:
+	sudo raspi-config -> 7 Advanced Options -> A5 Resolution -> DMT Mode 82 1920x1080 60Hz 16:9
+
+Install Samsung Thumb Drive Drivers:
+	sudo apt install exfat-fuse exfat-utils
+
+Set Static IP:
+	sudo nano /etc/dhcpcd.conf
+
+	interface eth0
+	static ip_address=192.168.86.100/24
