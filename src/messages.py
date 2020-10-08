@@ -2,41 +2,41 @@ import math
 import json
 import server
 
-class ClusterMessage:
-    def __init__(self, ):
-        pass
+def split_list(lst, num_clients):
+    if isinstance(lst, list):
+        split_data = []
+        items_per_list = math.ceil(len(lst) / num_clients)
 
+        try:
+            for i in range(0, len(lst), items_per_list):
+                split_data.append(lst[i: i + items_per_list])
+                
+            return split_data
 
-    def split_list(self, lst):
-        if isinstance(lst, list):
-            messages = []
-            items_per_list = math.ceil(len(lst) / len(self.clients))
+        except:
+            print("Error: list splitting failed.")
+    else:
+        print("Error: data is not type list.")
 
-            try:
-                for i in range(0, len(lst), items_per_list):
-                    messages.append(lst[i: i + items_per_list])
-                return messages
+def split_str(string):
+    pass
 
-            except:
-                print("Error: list splitting failed.")
-        else:
-            print("Error: data is not type list.")
+def split_dict(dictionary):
+    pass
 
-    def split_str(self, string):
-        pass
+def create_message(function, data = None):
+    try:
+        # json.dumps turns any data into string, .encode turns string into bytes
+        return json.dumps({function: data}).encode()
+        
+    except Exception as e:
+        print(f'create_message error: {e}')
 
-    def split_dict(self, dictionary):
-        pass
+def deserialize_data(data):
+    # .decode turns bytes into string, json.loads turns string back into original data type (dict, list, etc)
+    try:
+        return json.loads(data.decode())
+        
+    except Exception as e:
+        return print(f'deserialize_data error: {e}')
 
-    def create_server_message(self, data):
-        pass
-
-    def create_client_message(self, data):
-        pass
-
-
-def serialize_data(data):
-    return json.dumps(data).encode()  # json.dumps turns any data into string, .encode turns string into bytes
-
-def deserialize_data(serialized_data):
-    return json.loads(serialized_data.decode()) # .decode turns bytes into string, json.loads turns string back into original data type (dict, list, etc)

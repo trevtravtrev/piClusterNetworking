@@ -1,39 +1,77 @@
 import socket
 import json
 
+import messages
 
 class Client:
-    def __init__(self):
-        self.host = "192.168.86.100"
-        self.port = 8000
-    
-        self.pi_num = socket.gethostname()  # gets pi number in cluster. ***PI HOSTNAME MUST BE SET AS ONLY A NUMBER***
+    def __init__(self, server_host, server_port):
+        self.host = server_host
+        self.port = server_port
+        self.connected = False
+        
+        # get pi number in cluster. ***PI HOSTNAME MUST BE SET AS ONLY A NUMBER***
+        self.pi_num = socket.gethostname()
+        
+        self.connect()
+        self.client_handler()
 
-        try:
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.connect((self.host, self.port))
-    
-        except socket.error as err:
-            print('Client failed: {}'.format(err))
 
-        message = serialize_data(self.pi_num)
-        self.sock.send(message)  # send json serialized pi number
-    
+    def connect(self):
         while True:
-            print(self.sock.recv(4096))
-
-    def send_message(self):
-        pass
-
-
-
-def serialize_data(data):
-    return json.dumps(data).encode()
-
-
-def deserialize_data(serialized_data):
-    return json.loads(serialized_data).decode()
+            try:
+                # Connect to server
+                self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.sock.connect((self.host, self.port))
+                print("Successfully connected to server.")
+                self.connected = True
+                
+                # Handshake with server (send pi number)
+                message = messages.create_message("pi_num", self.pi_num)
+                self.sock.sendall(message)
+                break
+            
+            except Exception as e:
+                self.connected = False
+                print(f'connect error: {e}')
+                
+    def client_handler(self):
+        while True:
+            try:
+                if self.connected:
+                    data = self.sock.recv(4096)
+                    
+                    if data:
+                        message = messages.deserialize_data(data)
+                        print(f'Message received: {message}')
+                        self.message_handler(message)
+                
+                    else:
+                        self.connected = False
+                else:
+                    print("Client disconnected. Trying to reconnect...")
+                    self.connect()
+                    
+            except Exception as e:
+                print(f'client_handler error: {e}')
+            
+    def message_handler(self, message):
+        try:
+            if "shutdown" in message.keys():
+                print("Shutting down...")
+                os.system("sudo shutdown -h now")
+            
+            elif "reboot" in message.keys():
+                os.system("sudo shutdown -r now")
+                
+            elif "test" in message.keys():
+                print(f'Test message received: {message.get("test")}')
+                
+            else:
+                print("Error: function not found in keys.")
+        
+        except Exception as e:
+            print(f'message_handler error: {e}')
 
 
 if __name__ == '__main__':
-    start_client()
+    c = Client("192.168.86.100", 8000)
