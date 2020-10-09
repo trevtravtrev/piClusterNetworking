@@ -1,5 +1,6 @@
 import socket
 import json
+import time
 
 import messages
 
@@ -57,11 +58,13 @@ class Client:
     def message_handler(self, message):
         try:
             if "shutdown" in message:
-                print("Shutting down...")
+                print("Shutting down in 5 seconds...")
+                time.sleep(5)
                 os.system("sudo shutdown -h now")
             
             elif "reboot" in message:
-                print("Rebooting...")
+                print("Rebooting in 5 seconds...")
+                time.sleep(5)
                 os.system("sudo shutdown -r now")
                 
             elif "test" in message:

@@ -27,7 +27,7 @@ def split_dict(dictionary):
 def create_message(function, data = None):
     try:
         # json.dumps turns any data into string, .encode turns string into bytes
-        return json.dumps({function: data}).encode()
+        return serialize_data({function: data})
         
     except Exception as e:
         print(f'create_message error: {e}')
@@ -39,4 +39,11 @@ def deserialize_data(data):
         
     except Exception as e:
         return print(f'deserialize_data error: {e}')
+        
+def serialize_data(data):
+    try:
+        return json.dumps(data).encode()
+        
+    except Exception as e:
+        return print(f'serialize_data error: {e}')
 

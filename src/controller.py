@@ -9,9 +9,8 @@ class Client:
 		self.port = server_port
 		self.connected = False
 		
-		# get pi number in cluster. ***PI HOSTNAME MUST BE SET AS ONLY A NUMBER***
-		# pi_num 0 is known as the controller pi by the server
-		self.pi_num = 0
+		# pi_num "controller" is known as the controller pi by the server
+		self.pi_num = "controller"
 		
 		self.connect()
 		self.controller()
