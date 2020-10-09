@@ -56,14 +56,15 @@ class Client:
             
     def message_handler(self, message):
         try:
-            if "shutdown" in message.keys():
+            if "shutdown" in message:
                 print("Shutting down...")
                 os.system("sudo shutdown -h now")
             
-            elif "reboot" in message.keys():
+            elif "reboot" in message:
+                print("Rebooting...")
                 os.system("sudo shutdown -r now")
                 
-            elif "test" in message.keys():
+            elif "test" in message:
                 print(f'Test message received: {message.get("test")}')
                 
             else:
@@ -71,7 +72,11 @@ class Client:
         
         except Exception as e:
             print(f'message_handler error: {e}')
+            
+            
+def main():
+    c = Client("192.168.86.100", 8000)
 
 
 if __name__ == '__main__':
-    c = Client("192.168.86.100", 8000)
+    main()

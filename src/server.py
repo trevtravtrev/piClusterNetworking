@@ -11,7 +11,7 @@ class Server:
         self.host = host_ip
         self.port = host_port
         self.connected = False
-        self.clients = []
+        self.clients = {}
 
         self.start_server()
         self.connection_handler()
@@ -41,11 +41,7 @@ class Server:
                     connection, address = self.sock.accept()
                     
                     client = ClientThread(self, connection, address)
-                    client.start()
-                    print(f'Client: {address} connected.')
-                    
-                    self.clients.append(connection)
-                    print(f'{len(self.clients)} client(s) connected')
+                    client.start()                    
                     
                 else:
                     print("Server not running. Restarting...")
@@ -55,11 +51,14 @@ class Server:
                 print(f'connection_handler error: {e}')
             
             
-    def send_all(self, message):
+    def send_all(self, data):
         try:
-            for client in self.clients:
-                client.sendall(message)
-            print(f'Message successfully sent to {len(clients)} client(s)')
+            message = messages.serialize_data(data)
+            
+            for pi_num in self.clients:
+                self.clients.get(pi_num).sendall(message)
+                
+            print(f'Message successfully sent to {len(self.clients)} client(s)')
             
         except Exception as e:
             print(f'send_all error: {e}')
@@ -98,19 +97,24 @@ class ClientThread(threading.Thread):
         
     def message_handler(self, message):
         try:
-            if "pi_num" in message.keys():
+            if "pi_num" in message:
                 self.pi_num = message.get('pi_num')
-                print(f'pi_num: {self.pi_num}')
+                self.server.clients[self.pi_num] = self.conn
+                print(f'Pi {self.pi_num} connected.')
+                print(f'{len(self.server.clients)} client(s) connected')
                 
                 #pull website from database
                 website = "www.test123.com"
                 message = messages.create_message("test", website)
                 self.conn.sendall(message)
                 
-            elif "crawler" in message.keys():
+            elif "crawler" in message:
                 # add to the database
                 # self.conn.sendall(another website)
                 pass
+                
+            elif "shutdown" or "reboot" or "custom" or "test" in message:
+                self.server.send_all(message)
                 
             else:
                 print("Error: function not found in keys.")
@@ -121,7 +125,7 @@ class ClientThread(threading.Thread):
     def remove_client(self):
         try:
             print('Client disconnected. Removing from client list...')
-            self.server.clients.remove(self.conn)
+            del self.server.clients[self.pi_num]
             print(f'{len(self.server.clients)} clients(s) connected')
         
         except Exception as e:
