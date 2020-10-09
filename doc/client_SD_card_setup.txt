@@ -3,7 +3,6 @@ Install Noobs
 Update:
 	sudo apt update
 	sudo apt upgrade
-	pip3 install os
 
 Set Hostname to what # pi it is in the cluster (number ONLY):
 	Applications -> Preferences -> Raspberry Pi Configuration -> System -> Hostname
