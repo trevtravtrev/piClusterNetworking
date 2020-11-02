@@ -3,13 +3,14 @@ import threading
 import json
 import time
 
-import messages
+from networking import messages
 
 
 class Server:
-    def __init__(self, host_ip, host_port):
+    def __init__(self, host_ip, host_port, server_name):
         self.host = host_ip
         self.port = host_port
+        self.server_name = server_name
         self.connected = False
         self.clients = {}
 
@@ -23,7 +24,7 @@ class Server:
                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.sock.bind((self.host, self.port))
                 self.connected = True
-                print("Server started successfully")
+                print(f'{self.server_name} server started successfully')
                 break
                 
             except Exception as e:
@@ -130,13 +131,3 @@ class ClientThread(threading.Thread):
         
         except Exception as e:
             print(f'remove_client error: {e}')
-        
-
-
-def main():
-    s = Server("192.168.86.100", 8000)
-
-
-if __name__ == '__main__':
-    main()
-    

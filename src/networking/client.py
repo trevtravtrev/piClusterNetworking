@@ -3,12 +3,14 @@ import json
 import time
 import os
 
-import messages
+from networking import messages
+
 
 class Client:
-    def __init__(self, server_host, server_port):
+    def __init__(self, server_host, server_port, client_name):
         self.host = server_host
         self.port = server_port
+        self.client_name = client_name
         self.connected = False
         
         # get pi number in cluster. ***PI HOSTNAME MUST BE SET AS ONLY A NUMBER***
@@ -24,7 +26,7 @@ class Client:
                 # Connect to server
                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.sock.connect((self.host, self.port))
-                print("Successfully connected to server.")
+                print(f'{self.client_name} client successfully connected to server.')
                 self.connected = True
                 
                 # Handshake with server (send pi number)
@@ -76,11 +78,3 @@ class Client:
         
         except Exception as e:
             print(f'message_handler error: {e}')
-            
-            
-def main():
-    c = Client("192.168.86.100", 8000)
-
-
-if __name__ == '__main__':
-    main()
