@@ -1,16 +1,13 @@
 import socket
 import threading
-import json
-import time
 
-from networking import messages
+import messages
 
 
 class Server:
-    def __init__(self, host_ip, host_port, server_name):
+    def __init__(self, host_ip, host_port):
         self.host = host_ip
         self.port = host_port
-        self.server_name = server_name
         self.connected = False
         self.clients = {}
 
@@ -24,7 +21,7 @@ class Server:
                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.sock.bind((self.host, self.port))
                 self.connected = True
-                print(f'{self.server_name} server started successfully')
+                print("Server started successfully")
                 break
                 
             except Exception as e:
@@ -63,7 +60,34 @@ class Server:
             
         except Exception as e:
             print(f'send_all error: {e}')
+            
+            
+    def message_handler(self, message):
+        print("""
+You must override the server "message_handler" function with your own custom message parser. 
 
+For example:
+
+    try:
+        if "shutdown" in message:
+            print("Shutting down in 5 seconds...")
+            time.sleep(5)
+            os.system("sudo shutdown -h now")
+
+        elif "reboot" in message:
+            print("Rebooting in 5 seconds...")
+            time.sleep(5)
+            os.system("sudo shutdown -r now")
+
+        elif "test" in message:
+            print(f'Test message received: {message.get("test")}')
+
+        else:
+            print("Error: function not found in keys.")
+
+    except Exception as e:
+        print(f'message_handler error: {e}')
+""")
 
 class ClientThread(threading.Thread):
     def __init__(self, serv, connection, address):
@@ -75,6 +99,7 @@ class ClientThread(threading.Thread):
 
 
     def run(self):
+        self.get_pi_num()
         self.client_handler()
             
             
@@ -86,7 +111,8 @@ class ClientThread(threading.Thread):
                 if data:
                     message = messages.deserialize_data(data)
                     print(f'Message received: {message}')
-                    self.message_handler(message)
+
+                    self.server.message_handler(message)
                     
                 else:
                     self.remove_client()
@@ -96,33 +122,27 @@ class ClientThread(threading.Thread):
                 print(f'client_handler error: {e}')
                     
         
-    def message_handler(self, message):
+    def get_pi_num(self):
         try:
-            if "pi_num" in message:
-                self.pi_num = message.get('pi_num')
-                self.server.clients[self.pi_num] = self.conn
-                print(f'Pi {self.pi_num} connected.')
-                print(f'{len(self.server.clients)} client(s) connected')
-                
-                #pull website from database
-                website = "www.test123.com"
-                message = messages.create_message("test", website)
-                self.conn.sendall(message)
-                
-            elif "crawler" in message:
-                # add to the database
-                # self.conn.sendall(another website)
-                pass
-                
-            elif "shutdown" or "reboot" or "custom" or "test" in message:
-                self.server.send_all(message)
-                
-            else:
-                print("Error: function not found in keys.")
+            data = self.conn.recv(4096)
+
+            if data:
+                message = messages.deserialize_data(data)
+                print(f'Message received: {message}')
+
+                if "pi_num" in message:
+                    self.pi_num = message.get('pi_num')
+                    self.server.clients[self.pi_num] = self.conn
+                    print(f'Pi {self.pi_num} connected.')
+                    print(f'{len(self.server.clients)} client(s) connected')
+
+                else:
+                    print("Error: pi_num not found in message.")
                 
         except Exception as e:
-            print(f'message_handler error: {e}')
-            
+            print(f'get_pi_num error: {e}')
+
+
     def remove_client(self):
         try:
             print('Client disconnected. Removing from client list...')
