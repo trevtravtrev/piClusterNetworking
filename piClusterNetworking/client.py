@@ -4,7 +4,7 @@ from . import messages
 
 
 class Client:
-    def __init__(self, server_host, server_port, pi_num = socket.gethostname()):
+    def __init__(self, server_host, server_port, pi_num=socket.gethostname()):
         self.host = server_host
         self.port = server_port
         self.connected = False
@@ -88,4 +88,3 @@ For example:
                     
             except Exception as e:
                 print(f'client_handler error: {e}')
-                

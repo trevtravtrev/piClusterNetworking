@@ -89,6 +89,7 @@ For example:
         print(f'message_handler error: {e}')
 """)
 
+
 class ClientThread(threading.Thread):
     def __init__(self, serv, connection, address):
         threading.Thread.__init__(self)
