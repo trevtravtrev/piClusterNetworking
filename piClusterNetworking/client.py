@@ -1,6 +1,6 @@
 import socket
 
-import messages
+from . import messages
 
 
 class Client:

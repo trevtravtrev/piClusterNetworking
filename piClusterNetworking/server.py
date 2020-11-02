@@ -1,7 +1,7 @@
 import socket
 import threading
 
-import messages
+from . import messages
 
 
 class Server:
