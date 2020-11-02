@@ -3,7 +3,7 @@ import json
 import time
 import os
 
-import messages
+from networking import messages
 
 class Client:
     def __init__(self, server_host, server_port):

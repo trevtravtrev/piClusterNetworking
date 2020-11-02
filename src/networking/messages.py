@@ -1,6 +1,5 @@
 import math
 import json
-import server
 
 def split_list(lst, num_clients):
     if isinstance(lst, list):
@@ -13,8 +12,8 @@ def split_list(lst, num_clients):
                 
             return split_data
 
-        except:
-            print("Error: list splitting failed.")
+        except Exception as e:
+            print(f'split_list error: {e}')
     else:
         print("Error: data is not type list.")
 
