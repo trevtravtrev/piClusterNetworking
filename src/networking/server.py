@@ -131,16 +131,3 @@ class ClientThread(threading.Thread):
         
         except Exception as e:
             print(f'remove_client error: {e}')
-<<<<<<< HEAD:src/networking/server.py
-=======
-        
-
-
-def main():
-    s = Server("192.168.86.100", 8000, "Controller")
-
-
-if __name__ == '__main__':
-    main()
-    
->>>>>>> 5c352f3ad909e4552e1a5ad74958f681fa8a03a1:src/server.py
