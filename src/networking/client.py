@@ -4,7 +4,10 @@ import time
 import os
 
 from networking import messages
+<<<<<<< HEAD:src/networking/client.py
 
+=======
+>>>>>>> 5c352f3ad909e4552e1a5ad74958f681fa8a03a1:src/client.py
 
 class Client:
     def __init__(self, server_host, server_port, client_name):
