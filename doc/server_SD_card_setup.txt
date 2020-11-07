@@ -3,6 +3,8 @@ Install Noobs
 Update:
 	sudo apt update
 	sudo apt upgrade
+	sudo apt-get install sqlite3
+	sudo apt-get install sqlitebrowser
 
 Set Hostname to what # pi it is in the cluster (number ONLY):
 	Applications -> Preferences -> Raspberry Pi Configuration -> System -> Hostname
