@@ -14,3 +14,7 @@ Enable VNC server and add to account:
 
 Set Display Resolution:
 	sudo raspi-config -> 7 Advanced Options -> A5 Resolution -> DMT Mode 82 1920x1080 60Hz 16:9
+
+Setup Surfshark VPN and DNS:
+	Check Raspberry Pi Excel Spreadsheet for what server location to use
+	https://gist.github.com/trevtravtrev/ae68e9dd7ac8aa11bbcc12c75c6381a7
